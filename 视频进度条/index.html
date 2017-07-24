@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<meta content="width=device-width,height=device-height,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+	<script src="https://cdn.bootcss.com/jquery/2.2.2/jquery.min.js"></script>
+</head>
+<body>
+<div class="yx">
+    <div class="xx-list"><i class="xx-close">X</i>1111111111111111111111111111111111111111111111111111111111111111111</div>
+</div>
+<style>
+   .yx{
+      position: fixed;
+      top: 0;
+      right: 0;
+      background: white;
+   }
+   .xx-list{
+      width:200px;
+      padding: 0 5px;
+      min-height: 30px;
+      line-height: 30px;
+      display: block;
+      background: white;
+      -webkit-animation: animate-dh 2s linear infinite; 
+      -moz-animation: animate-dh 2s linear infinite;
+      -ms-animation: animate-dh 2s linear infinite;
+      -o-animation: animate-dh 2s linear infinite;
+      animation: animate-dh 2s linear infinite;
+      animation-iteration-count:1;
+      animation-fill-mode:forwards;
+      box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+   }
+@-webkit-keyframes animate-dh {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@-moz-keyframes animate-dh {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@-ms-keyframes animate-dh {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@-o-keyframes animate-dh {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+</style>
+<script>
+  var yxtips_mp3 = document.getElementById('yxtips_mp3');
+  // yxtips_mp3.play();
+  $('.yx').on('click','.xx-close',function(){
+      $(this).parent().animate({opacity:'0'});
+  })
+</script>
+
+
+
+
+
+
+
+
+
+	<video id="liveVideo" x5-video-player-type="h5" x5-video-player-fullscreen="true" x5-video-orientation="portrait" preload="auto" type="application/x-mpegURL" src="http://www.feiniaolive.com/data/files/v/2C305F0FD08D45DF8A1E8F284341A6F8B569EDBF.mp4" playsinline="" webkit-inline="true" webkit-playsinline="" x-webkit-airplay="allow" loop="loop" style="font-size: 0px; width: 100%; display: inline;" controls></video>
+    
+    <div class="video-controls">
+        <div class="progressBar" id="progressBar">
+           <div class="timeBar"></div>
+           <div class="timeBar-y"></div>
+    	</div>
+    	<div class="v-kz">
+    	<div class="v-left v-play" title="播放"></div>
+    	<div class="v-left v-pause" title="暂停"></div>
+    	<div class="v-time">
+             <span class="current">00:00:00</span>
+             <span>/</span>
+             <span class="duration">00:00:00</span>
+    	</div>
+    	<div class="v-right v-qp" title="全屏"></div>
+    	<div class="v-right v-bp" title="半屏"></div>
+    	</div>
+    </div>
+
+    <div class="tims"></div>
+    <div id="inp"></div>
+    <style>
+        body{
+        	height: 800px;
+        }
+        .video-controls{
+        	height: 40px;
+        	background: rgba(0,0,0,.4);
+        	position: relative;
+        	top: -72px;
+        	color: white;
+        }
+        .progressBar{
+        	position: relative;
+        	width: 100%;
+        	height:5px;
+        	background-color: #6b6b6b;
+        }
+        .timeBar{
+        	position: absolute;
+        	top: 0;
+        	left: 0;
+        	width: 4px;
+        	height: 100%;
+        	background-color: #ccc;
+        }
+        .timeBar-y{
+        	width: 12px;
+        	height: 12px;
+        	display: block;
+        	position: absolute;
+        	top: -3px;
+        	left: 0;
+        	border-radius: 50%;
+        	background-color: #ff9800;
+        }
+        .v-kz{
+        	margin-top: 8px;
+        }
+        .v-time{
+        	margin-left: 20px;
+        	line-height: 20px;
+        	float: left;
+        	font-size: 12px;
+        }
+        .v-time span{
+        	display: inline-block;
+        }
+        .v-left{
+        	width: 18px;
+        	height: 18px;
+        	float: left;
+        	display: inline-block;
+        	margin-left: 8px;
+        	background: url(img.png) no-repeat;
+        	background-size: cover;
+        }
+        .v-right{
+        	width: 18px;
+        	height: 18px;
+        	float: right;
+        	display: inline-block;
+        	margin-right: 8px;
+        	background: red;
+        	background: url(img.png) no-repeat;
+        	background-size: cover;
+        }
+        .v-play{
+          background-position: -36px 0;
+        }
+        .v-pause{
+          display: none;
+          background-position: -54px 0;
+        }
+        .v-qp{
+          background-position: 0 0;
+        }
+        .v-bp{
+          display: none;
+          background-position: -18px 0;
+        }
+    </style>
+
+    <script>
+// 4种定义方式
+// var video = document.getElementById('liveVideo');
+// var video = $('#liveVideo').get(0); //or
+// var video = $('#liveVideo')[0];
+var video = $('#liveVideo');
+//获取视频总时长
+var duration = 0;
+video.on('loadedmetadata', function() {
+   duration = video[0].duration;
+   $('.duration').text(formatSeconds(duration));
+});
+//获取视频播放时长
+var currentTime = 0;
+video.on('timeupdate', function(e) {
+   currentTime = video[0].currentTime;
+   $('.current').text(formatSeconds(currentTime));
+   videoEnd();
+   if( currentTime > duration-1 ){   //实时监控有1秒延迟
+     $('.timeBar').css('width', 0+'%');
+     $('.timeBar-y').css('left', 0+'%');
+   }
+   updatebar(currentTime)
+});
+//判断视频是否播放完毕   //循环播放的时候这个End不会触发
+function videoEnd(){
+   var videoEnd = document.getElementById("liveVideo").ended;
+   if( videoEnd ){
+      $('.timeBar').css('width', 0+'%');
+      $('.timeBar-y').css('left', 0+'%');
+   };
+}
+//控制条点击
+var timeDrag = false;   /* Drag status */
+$('.progressBar').mousedown(function(e) {
+   timeDrag = true;
+   upxbar(e.pageX);
+});
+$(document).mouseup(function(e) {
+   if(timeDrag) {
+      timeDrag = false;
+      upxbar(e.pageX);
+   }
+});
+$(document).mousemove(function(e) {
+   if(timeDrag) {
+      upxbar(e.pageX);
+   }
+});
+//控制条拖动
+var progressBar = document.getElementById('progressBar');
+  progressBar.addEventListener('touchmove', function(e) {
+   e.preventDefault();// 阻止浏览器默认事件，重要
+   var e = e.targetTouches[0];
+   upxbar(e.pageX);
+ }, false);
+
+//根据进度控制时间
+function upxbar(x) {
+   var progress = $('.progressBar');
+   var position = x - progress.offset().left; //Click pos
+   var percentage = 100 * position / progress.width();
+   if(percentage > 100) {
+      percentage = 100;
+   }
+   if(percentage < 0) {
+      percentage = 0;
+   }
+   $('.timeBar').css('width', percentage+'%');
+   $('.timeBar-y').css('left', percentage-0.5+'%');
+   video[0].currentTime = duration * percentage / 100;
+   video[0].play();   //点击之后播放
+   $('.v-pause').show().siblings('.v-play').hide();
+};
+//根据时间控制进度
+function updatebar(x) {
+   var progress = $('.progressBar');
+   var percentage = 100 * x / duration;
+   $('.timeBar').css('width', percentage+'%');
+   $('.timeBar-y').css('left', percentage-0.5+'%');
+};
+
+// 秒 、分、时 转换
+function formatSeconds(seconds){
+  var T_seconds =  parseInt(seconds) //秒
+  var T_minute = 0;  // 分
+  var T_hour = 0;  // 小时
+    if( T_seconds > 60) {  
+        T_minute = parseInt(T_seconds/60);   //除
+        T_seconds = parseInt(T_seconds%60);  //取余
+            if( T_minute > 60) {
+            T_hour = parseInt(T_minute/60);
+            T_minute = parseInt(T_minute%60);
+            }
+    }
+    var result = 0;
+    if( T_seconds >= 0 && T_seconds < 10 ){
+    	result = "0"+parseInt(T_seconds);
+    }else{
+    	result = ""+parseInt(T_seconds);
+    }
+    if( T_minute >= 0 && T_minute < 10) {
+    	result = "0"+parseInt(T_minute)+":"+result;
+    }else{
+    	result = ""+parseInt(T_minute)+":"+result;
+    }
+    if( T_hour >= 0 && T_hour < 10 ) {
+    	result = "0"+parseInt(T_hour)+":"+result;
+    }else{
+    	result = ""+parseInt(T_hour)+":"+result;
+    }
+    return result;
+}
+
+    </script>
+</body>
+</html>

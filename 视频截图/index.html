@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>video测试</title>
+	<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body>
+<video id="video" controls="controls">  
+  <source src="（4）金沙漂流直播_20170715142115_5475_超清.mp4" />  
+</video>
+<button id="capture">截图</button>
+<div id="output"></div>
+<script>
+(function() {  
+  var video, $output;  
+  var scale = 0.25;  //截图的大小
+  var initialize = function() {   //定义一些属性
+    $output = $("#output");  
+    video = $("#video").get(0);  
+    console.log(video)
+    // $("#capture").click(captureImage);
+    setTimeout(function() {
+        captureImage()
+    },1000);
+  };  
+  function captureImage() {  
+    var canvas = document.createElement("canvas");  
+    canvas.width = video.videoWidth * scale;  
+    canvas.height = video.videoHeight * scale;  
+    console.log(video.videoHeight)
+    canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);  
+    var img = document.createElement("img");  
+    img.src= canvas.toDataURL();   //截图的方法
+    $output.prepend(img);  
+  };  
+  $(initialize);        
+}())
+</script>
+
+<!--   function captureImage() {  
+    var canvas = document.createElement("canvas");  
+    canvas.width = video.videoWidth * scale;  
+    canvas.height = video.videoHeight * scale;  
+    console.log(video.videoHeight)
+    canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);  
+    var img = document.createElement("img");  
+    img.src= canvas.toDataURL();   //截图的方法
+    $output.prepend(img);  
+  };  -->
+
+<!-- 问题提示：
+
+Uncaught SecurityError: Failed to execute 'toDataURL' on 'HTMLCanvasElement': Tainted canvases may not be exported.
+经过查阅和分析，发现这个其实是由于视频文件所在的域和图片和页面所在域不同，出现跨域传输的问题。
+
+
+解决方案：
+必须用本地服务器http打开  不可以直接用file协议打开
+将视频文件放到页面所在域下。 -->
+</body>
+</html>
