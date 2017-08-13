@@ -29,10 +29,10 @@ Uncaught SecurityError: Failed to execute 'toDataURL' on 'HTMLCanvasElement': Ta
     $output = $("#output");  
     video = $("#video").get(0);  
     console.log(video)
-    // $("#capture").click(captureImage);
-    setTimeout(function() {
-        captureImage()
-    },1000);
+    $("#capture").click(captureImage);
+    // setTimeout(function() {
+    //     captureImage()
+    // },1000);
   };  
   function captureImage() {  
     var canvas = document.createElement("canvas");  
