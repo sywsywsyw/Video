@@ -8,13 +8,9 @@
 </head>
 <body>
 <h2>x5-video-player-type="h5" 只需要加一个属性</h2>
-<header id="header" class="header">标题栏</header>
 <div class="player">
     <video id="video" class="video" controls="controls" playsinline x5-video-player-type="h5" x5-video-player-fullscreen="true" src="http://vodnqgguctl.vod.126.net/vodnqgguctl/8226c01795da466e929f88ca972e1aa2_1518057942894_1518058004876_175969418-00000.mp4">
     </video>
-</div>
-<div id="main" class="main">
-    <div class="inner">这里是其他内容</div>
 </div>
 <style>
 .player {
@@ -44,7 +40,7 @@
     z-index: 9999;
 }
 .fullscreen .player .video {
-    object-position: center 48px;
+    object-position: center 0;
 }
 .main {
     height: 5rem;
