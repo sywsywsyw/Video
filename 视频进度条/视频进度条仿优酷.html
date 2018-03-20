@@ -1,0 +1,520 @@
+<!-- 视频进度条封装 -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>视频进度条仿优酷</title>
+	<script src="http://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+	<style media="screen">
+		* {
+			margin: 0;
+			padding: 0;
+		}
+
+		body {
+			background: rgba(0, 0, 0, .7);
+		}
+	</style>
+	<style>
+		.v-videowrap {
+			width: 100%;
+			height: 500px;
+			position: relative;
+		}
+
+		/* 视频内容 */
+
+		.v-video {
+			width: 100%;
+			background: rgba(0, 0, 0, 1);
+			height: 100%;
+		}
+
+		/* 视频封面 */
+
+		.v-poster {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			bottom: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.6);
+			background-size: cover;
+			background-position: center center;
+			background-repeat: no-repeat;
+		}
+
+		/* 视频控制条 */
+
+		.v-controlswrap {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			bottom: 0;
+			width: 100%;
+			height: 40px;
+			background: rgba(0, 0, 0, 0.6);
+		}
+
+		.v-controlstrip {
+			position: relative;
+			width: 100%;
+			margin: 0 auto;
+			height: 6px;
+			background-color: white;
+			border-radius: 6px;
+			cursor: pointer;
+		}
+
+		.v-constr-buffer {
+			height: 6px;
+			background-color: rgba(0, 0, 0, 0.6);
+			border-radius: 6px;
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 80%;
+		}
+
+		.v-constr-strip {
+			height: 6px;
+			background-color: rgb(255, 204, 51);
+			border-radius: 6px;
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 60%;
+		}
+
+		.v-constr-circle {
+			width: 12px;
+			height: 12px;
+			background-color: rgb(255, 204, 51);
+			position: absolute;
+			border-radius: 50%;
+			top: -3px;
+			left: 100%;
+			margin-left: -3px;
+		}
+
+		/* 视频控制按钮 */
+
+		.v-controlbtn {
+			color: white;
+			line-height: 34px;
+		}
+
+		.v-control-left {
+			float: left;
+			cursor: pointer;
+		}
+
+		.v-control-right {
+			float: right;
+			cursor: pointer;
+		}
+
+		.v-conbtn-play {
+			display: inline-block;
+		}
+
+		.v-conbtn-time {
+			display: inline-block;
+			cursor: auto;
+		}
+
+		.v-conbtn-volume {
+			display: inline-block;
+			position: relative;
+		}
+
+		.v-conbtnv-stripwrap {
+			position: absolute;
+			bottom: 46px;
+			width: 30px;
+			height: 100px;
+			/* background: rgba(0, 0, 0, 0.6); */
+			background: red;
+		}
+
+		.v-conbtnvstrip {
+			width: 6px;
+			height: 80px;
+			background-color: white;
+			border-radius: 6px;
+			position: absolute;
+			top: 10px;
+			left: 50%;
+			margin-left: -3px;
+		}
+
+		.v-conbtnv-strip {
+			width: 6px;
+			height: 60%;
+			background-color: rgb(255, 204, 51);
+			border-radius: 6px;
+			position: absolute;
+			left: 50%;
+			bottom: 0;
+			margin-left: -3px;
+		}
+
+		.v-conbtnv-circle {
+			width: 12px;
+			height: 12px;
+			background-color: rgb(255, 204, 51);
+			position: absolute;
+			border-radius: 50%;
+			top: -3px;
+			left: 50%;
+			margin-left: -6px;
+		}
+
+		.v-conbtn-fullscreen {
+			display: inline-block;
+			cursor: pointer;
+		}
+		/* 全屏 */
+		.videoScreen{
+			z-index: 2147483647;
+		}
+		/*禁用播放器控制栏的样式 (包括全屏下的 )*/
+		.videoScreen video::-webkit-media-controls-enclosure {
+			display: none !important;
+		}
+		.videoScreen .v-controlswrap{
+				z-index: 2147483647;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="v-videowrap" id="test">
+		<!-- 视频内容 -->
+		<!-- <video class="v-video"  src="../img/test.mp4" preload="metadata" autoplay=""></video> -->
+		<video class="v-video" src="	../img/test.mp4" preload="metadata" autoplay="">
+2    <source src="../img/test.mp4" type="video/mp4" />
+3    <source src="../img/test.mp4" type="video/webM" />
+4    <source src="../img/test.mp4" type="video/ogg" />
+5    <p>Your browser does not support the video tag.</p>
+6    </video>
+		<!-- 视频封面 -->
+		<!-- <div class="v-poster" style="background-image: url(https://file.feiniaolive.com/fc5026378c1b5540aa7085ab68ce5858?imageView2/1/w/480/h/270/format/png/interlace/1/q/75|imageslim)"></div> -->
+		<!-- 视频控制条 -->
+		<div class="v-controlswrap">
+			<!-- 视频进度条 -->
+			<div class="v-controlstrip">
+				<!-- 视频进度条缓冲 -->
+				<div class="v-constr-buffer"></div>
+				<!-- 视频进度条播放 -->
+				<div class="v-constr-strip">
+					<!-- 视频进度播放圆点 -->
+					<div class="v-constr-circle"></div>
+				</div>
+			</div>
+			<!-- 视频控制按钮 -->
+			<div class="v-controlbtn">
+				<div class="v-control-left">
+					<!-- 视频开关 -->
+					<div class="v-conbtn-play">
+						播放开始
+					</div>
+					<!-- 视频时间 -->
+					<div class="v-conbtn-time">
+						<span class="v-cbtime-start">00:00:00</span>
+						<span>/</span>
+						<span class="v-cbtime-end">00:00:00</span>
+					</div>
+				</div>
+				<div class="v-control-right">
+					<!-- 视频音量 -->
+					<div class="v-conbtn-volume">
+						<div class="v-conbtn-volumetext">
+						  音量1%
+					  </div>
+						<div class="v-conbtnv-stripwrap">
+							<!-- 视频音量播放进度条 -->
+							<div class="v-conbtnvstrip">
+							<!-- 视频音量播放进度条 -->
+							<div class="v-conbtnv-strip">
+								<!-- 视频音量播放圆点 -->
+								<div class="v-conbtnv-circle"></div>
+							</div>
+					  	</div>
+						</div>
+					</div>
+					<!-- 视频全屏 -->
+					<div class="v-conbtn-fullscreen">全屏</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		// SuiVideoJs.duration //总时长 (秒)
+	</script>
+	<script>
+		/* 整个结构的id */
+		var importanceId = $('#test');
+		var importanceIdname = '#test';
+		console.log(importanceId);
+		/* jq视频对象 */
+		var SuiVideo = importanceId.find('.v-video');
+		/* js视频对象中才有视频时间、播放时间等信息*/
+		var SuiVideoJs = SuiVideo[0];
+		/* 视频开关 */
+		var SuiVideoFlag = importanceId.find('.v-conbtn-play');
+		$(document).on('click', '' + importanceIdname + ' .v-conbtn-play', function() {
+			if (SuiVideoJs.paused) {
+				SuiVideoFlag.text('播放开始');
+				SuiVideoJs.play();
+			} else {
+				SuiVideoFlag.text('播放关闭');
+				SuiVideoJs.pause();
+			}
+			return false;
+		});
+		/*
+		 * 视频时长开关
+		 * true 00:00 - 00:00  一个小时以内
+		 * false 00:00:00 - 00:00:00 一个小时以外
+		 */
+		var SuiFlagTime = true;
+		var SuiStartTime = '00:00';
+		var SuiEndTime = '00:00';
+		var SuiStartTimeObj = importanceId.find('.v-cbtime-start');
+		var SuiEndTimeObj = importanceId.find('.v-cbtime-end');
+		/* 视频总时长 */
+		var SuiDurations = 0;
+		SuiVideo.on('loadedmetadata', function() {
+			SuiDurations = SuiVideoJs.duration;
+			if (SuiDurations >= 3600) {
+				SuiFlagTime = false;
+				SuiStartTime = '00:00:00';
+			}
+			SuiStartTimeObj.text(SuiStartTime);
+			SuiEndTimeObj.text(formatSeconds(SuiDurations));
+			SuiVideoFlag.text('播放开始');
+		});
+		/* 视频播放时长 */
+		var currentTimes = 0;
+		SuiVideo.on('timeupdate', function(event) {
+			currentTimes = SuiVideoJs.currentTime;
+			dateUpBar(currentTimes);
+			SuiStartTimeObj.text(formatSeconds(currentTimes));
+		});
+		/* 视频进度条点击*/
+		var SuiProgressStripDrag = false; /* Drag status 拖动状态 */
+		var SuiProgressStrip = importanceId.find('.v-controlstrip');
+		/* 视频进度条已播放  */
+		var SuiProgressBar = importanceId.find('.v-constr-strip');
+		/*  视频进度条鼠标按下  */
+		SuiProgressStrip.mousedown(function(event) {
+			SuiProgressStripDrag = true;
+			barUpDate(event.pageX);
+		});
+		/*  视频进度条鼠标抬起  */
+		SuiProgressStrip.mouseup(function(event) {
+			if (SuiProgressStripDrag) {
+				SuiProgressStripDrag = false;
+				barUpDate(event.pageX);
+			}
+		});
+		/* 视频进度条鼠标离开 */
+		SuiProgressStrip.mousemove(function(event) {
+			if (SuiProgressStripDrag) {
+				barUpDate(event.pageX);
+			}
+		});
+		/* 视频进度条拖动 */
+		var SuiProgressCircle = importanceId.find('.v-constr-circle');
+		SuiProgressCircle[0].addEventListener('touchmove', function(event) {
+			event.preventDefault(); /*阻止浏览器默认事件，重要*/
+			var event = event.targetTouches[0];
+			barUpDate(event.pageX);
+		}, false);
+		/* 根据时间控制进度 */
+		function dateUpBar(time) {
+			var _width = (100 * time / SuiDurations) + '%';
+			if( _width > 100 ){
+				_width = 100;
+			}
+			if( _width <= 0 ){
+				_width = 0;
+			}
+			SuiProgressBar.css('width', _width);
+		};
+		/* 根据进度控制时间 */
+		function barUpDate(pageX) {
+			var _width = 100 * (pageX - SuiProgressStrip.offset().left ) / SuiProgressStrip.width();
+			if( _width > 100 ){
+				_width = 100;
+			}
+			if( _width <= 0 ){
+				_width = 0;
+			}
+			SuiProgressBar.css('width', _width + '%');
+			SuiVideoJs.currentTime = SuiDurations * _width / 100;
+			SuiStartTimeObj.text(formatSeconds(SuiDurations * _width / 100));
+		};
+		/* 视频播放缓冲 */
+		var SuiBufferStrip = importanceId.find('.v-constr-buffer');
+		function startBuffer() {
+		   var _SuiVideo = importanceId.find('.v-video');
+	  	 var _SuiVideoJs = _SuiVideo[0];
+		   var maxduration = _SuiVideoJs.duration;
+		   var currentBuffer = '';
+			 if( _SuiVideoJs.buffered.length != 0){
+			   currentBuffer += _SuiVideoJs.buffered.end(0);
+	     }
+
+		   var percentage = 100 * currentBuffer / maxduration;
+		   SuiBufferStrip.css('width', percentage+'%');
+		   if( currentBuffer < maxduration ) {
+		      setTimeout(startBuffer, 500);
+		   }
+		};
+		setTimeout(startBuffer, 1000);
+
+		/* 视频音量条点击*/
+		var SuiVolumeStripDrag = false; /* Drag status 拖动状态 */
+		var SuiVolumeStrip = importanceId.find('.v-conbtnvstrip');
+		/* 视频音量条音量  */
+		var SuiVolumeBar = importanceId.find('.v-conbtnv-strip');
+		/*  视频音量条鼠标按下  */
+		SuiVolumeStrip.mousedown(function(event) {
+			SuiVolumeStripDrag = true;
+			barUpVolume(event.pageY);
+		});
+		/*  视频音量条鼠标抬起  */
+		SuiVolumeStrip.mouseup(function(event) {
+			if (SuiVolumeStripDrag) {
+				SuiVolumeStripDrag = false;
+				barUpVolume(event.pageY);
+			}
+		});
+		/* 视频音量条鼠标离开 */
+		SuiVolumeStrip.mousemove(function(event) {
+			if (SuiVolumeStripDrag) {
+				barUpVolume(event.pageY);
+			}
+		});
+		/* 视频音量圆点拖动 */
+		var SuiVolumeCircle = importanceId.find('.v-conbtnv-circle');
+		SuiVolumeCircle[0].addEventListener('touchmove', function(event) {
+			event.preventDefault(); /*阻止浏览器默认事件，重要*/
+			var event = event.targetTouches[0];
+			barUpVolume(event.pageY);
+		}, false);
+		function barUpVolume(pageY){
+			var _height = 100 - ( 100 * (pageY - SuiVolumeStrip.offset().top) / SuiVolumeStrip.height() );
+			if( _height > 100 ){
+				_height = 100;
+			}
+			if( _height <= 0 ){
+				_height = 0;
+			}
+      SuiVolumeBar.css('height', _height+'%');
+			SuiVideoJs.volume = _height/100;
+			SuiVolumeText.text('音量'+parseInt(SuiVideoJs.volume*100)+'%');
+		}
+		/* 初始音量值 */
+		var SuiVolumeText = importanceId.find('.v-conbtn-volumetext');
+		SuiVolumeBar.css('height', SuiVideoJs.volume*100+'%');
+		SuiVolumeText.text('音量'+parseInt(SuiVideoJs.volume*100)+'%');
+		/* 全屏开关 */
+		var SuiVideoScreen = importanceId.find('.v-conbtn-fullscreen');
+		$(document).on('click', '' + importanceIdname + ' .v-conbtn-fullscreen', function() {
+			importanceId.toggleClass('videoScreen');
+			if (importanceId.hasClass('videoScreen') ) {
+				SuiVideoScreen.text('退出全屏');
+				launchFullscreen();
+			} else {
+				SuiVideoScreen.text('进入全屏');
+				exitFullscreen();
+			}
+			return false;
+		});
+		/* 视频进入全屏*/
+		function launchFullscreen() {
+			if (SuiVideoJs.requestFullscreen) {
+				SuiVideoJs.requestFullscreen();
+			} else if (SuiVideoJs.mozRequestFullScreen) {
+				SuiVideoJs.mozRequestFullScreen();
+			} else if (SuiVideoJs.msRequestFullscreen) {
+				SuiVideoJs.msRequestFullscreen();
+			} else if (SuiVideoJs.oRequestFullscreen) {
+				SuiVideoJs.oRequestFullscreen();
+			} else if (SuiVideoJs.webkitRequestFullscreen) {
+				SuiVideoJs.webkitRequestFullScreen();
+			} else {
+				document.IsFullScreen = true;
+			}
+		}
+		/* 视频退出全屏 */
+		function exitFullscreen() {
+			if (document.exitFullscreen) {
+				document.exitFullscreen();
+			} else if (document.msExitFullscreen) {
+				document.msExitFullscreen();
+			} else if (document.mozCancelFullScreen) {
+				document.mozCancelFullScreen();
+			} else if (document.oRequestFullscreen) {
+				document.oCancelFullScreen();
+			} else if (document.webkitExitFullscreen) {
+				document.webkitExitFullscreen();
+			} else {
+				document.IsFullScreen = false;
+			}
+		}
+		/*
+		 * 秒 、分、时 转换
+		 * seconds 秒数
+		 * 一个小时以内 00:00 - 00:00
+		 * 一个小时以外 00:00:00 - 00:00:00 一个小时以外
+		 */
+		function formatSeconds(seconds, flag) {
+			var T_seconds = parseInt(seconds) /*秒*/
+			var T_minute = 0; /*分*/
+			var T_hour = 0; /*小时*/
+			if (T_seconds > 60) {
+				T_minute = parseInt(T_seconds / 60); /* 除*/
+				T_seconds = parseInt(T_seconds % 60); /* 取余*/
+				if (T_minute >= 60) {
+					T_hour = parseInt(T_minute / 60);
+					T_minute = parseInt(T_minute % 60);
+				}
+			}
+			var result = 0;
+			if (T_seconds >= 0 && T_seconds < 10) {
+				result = "0" + parseInt(T_seconds);
+			} else {
+				result = "" + parseInt(T_seconds);
+			}
+			if (T_minute >= 0 && T_minute < 10) {
+				result = "0" + parseInt(T_minute) + ":" + result;
+			} else {
+				result = "" + parseInt(T_minute) + ":" + result;
+			}
+			if (!SuiFlagTime) {
+				// 一小时以外
+				if (T_hour >= 0 && T_hour < 10) {
+					result = "0" + parseInt(T_hour) + ":" + result;
+				} else {
+					result = "" + parseInt(T_hour) + ":" + result;
+				}
+			}
+			return result;
+		}
+	</script>
+
+
+
+</body>
+
+</html>
